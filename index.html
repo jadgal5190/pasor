@@ -466,7 +466,6 @@ transition: 0.2s;
         const teamNameInput = document.getElementById('teamNameInput');
         const addTeamBtn = document.getElementById('addTeamBtn');
         const drawBtn = document.getElementById('drawBtn');
-        const endMatchBtn = document.getElementById('endMatchBtn');
         const resetStatsBtn = document.getElementById('resetStatsBtn');
         const matchupContainer = document.getElementById('matchupContainer');
         const teamsListContainer = document.getElementById('teamsListContainer');
@@ -918,7 +917,6 @@ dataset.teamId);
             if (e.key === 'Enter') addTeam(teamNameInput.value);
         });
         drawBtn.addEventListener('click', shuffleAndStart);
-        endMatchBtn.addEventListener('click', endMatch);
         resetStatsBtn.addEventListener('click', resetStats);
 
         // بارگذاری اولیه
