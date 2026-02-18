@@ -1,0 +1,875 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت بازی پاسور - آمار کلی</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Vazir', 'Tahoma', sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+        h1, h2, h3 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 16px;
+        }
+        .input-group {
+            display: flex;
+            gap: 8px;
+            flex: 1 1 300px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button.secondary {
+            background: #94a3b8;
+        }
+        button.secondary:hover {
+            background: #64748b;
+        }
+        button.danger {
+            background: #ef4444;
+        }
+        button.danger:hover {
+            background: #dc2626;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        button.small {
+            padding: 4px 10px;
+            font-size: 0.85rem;
+        }
+        .current-game {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            color: white;
+            border-radius: 32px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+        .current-game h2 {
+            color: #f1f5f9;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .matchup {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .team-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 24px;
+            flex: 1 1 280px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .team-card h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin: 0 0 8px;
+            word-break: break-word;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 16px 0;
+            font-size: 1.3rem;
+        }
+        .stats span {
+            background: #0f172a;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+
+.actions button {
+            flex: 1 0 120px;
+            justify-content: center;
+            background: #fbbf24;
+            color: #0f172a;
+            font-weight: bold;
+        }
+        .actions button.kot-hakemi {
+            background: #ef4444;
+            color: white;
+        }
+        .teams-list {
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .teams-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .team-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .team-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            min-width: 120px;
+        }
+        .stat-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 40px;
+        }
+        .stat-control span {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .remove-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .remove-btn:hover:not(:disabled) {
+            background: #fecaca;
+        }
+        .remove-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        .overall-stats {
+            background: #dbeafe;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .overall-stats h3 {
+            margin: 0;
+            color: #1e3a8a;
+        }
+        .overall-stats .stats-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        footer {
+            margin-top: 24px;
+            text-align: center;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <h1>📊 مدیریت بازی پاسور</h1>
+
+    <!-- نوار ابزار -->
+    <div class="header-actions">
+        <div class="input-group">
+            <input type="text" id="teamNameInput" placeholder="نام تیم جدید..." maxlength="20">
+            <button id="addTeamBtn">➕ افزودن تیم</button>
+        </div>
+        <button id="drawBtn" class="secondary">🎲 قرعه‌کشی و شروع</button>
+        <button id="endMatchBtn" class="secondary">🏁 پایان مسابقه (به تیم اول +۱ برد)</button>
+        <button id="resetStatsBtn" class="secondary">🔄 ریست همه (بدون تغییر آمار کلی)</button>
+    </div>
+
+    <!-- بخش بازی فعلی -->
+    <div class="current-game" id="currentGameSection">
+        <h2>⚔️ بازی فعلی</h2>
+        <div id="matchupContainer" class="matchup">
+            <!-- تیم‌ها به صورت داینامیک پر می‌شوند -->
+        </div>
+    </div>
+
+    <!-- لیست تمام تیم‌ها با کنترل دستی -->
+    <div class="teams-list">
+        <div class="teams-header">
+            <h3>📋 لیست تیم‌ها (آمار کلی و وضعیت فعلی)</h3>
+            <span id="teamsCount">۰ تیم</span>
+        </div>
+        <div id="teamsListContainer">
+            <!-- تیم‌ها به صورت داینامیک -->
+        </div>
+    </div>
+
+
+<!-- بخش آمار کلی (نمایش مجموع بردها) -->
+    <div class="overall-stats" id="overallStats">
+        <h3>🏆 آمار کلی بردها</h3>
+        <div id="overallStatsContainer" class="stats-summary">
+            <!-- به صورت داینامیک پر می‌شود -->
+        </div>
+    </div>
+
+    <footer>برای ویرایش دستی از دکمه‌های + و - در کنار هر آمار استفاده کنید.</footer>
+</div>
+
+<script>
+    (function() {
+        // وضعیت اصلی برنامه
+        let teams = [];                 // آرایه‌ای از اشیاء تیم: { id, name, wins (کلی), pis (فعلی), singleKots (فعلی) }
+        let teamOrder = [];             // آرایه‌ای از idها به ترتیب نوبت
+
+        // کلید localStorage
+        const STORAGE_KEY = 'pasourGameData';
+
+        // عناصر DOM
+        const teamNameInput = document.getElementById('teamNameInput');
+        const addTeamBtn = document.getElementById('addTeamBtn');
+        const drawBtn = document.getElementById('drawBtn');
+        const endMatchBtn = document.getElementById('endMatchBtn');
+        const resetStatsBtn = document.getElementById('resetStatsBtn');
+        const matchupContainer = document.getElementById('matchupContainer');
+        const teamsListContainer = document.getElementById('teamsListContainer');
+        const teamsCountSpan = document.getElementById('teamsCount');
+        const overallStatsContainer = document.getElementById('overallStatsContainer');
+
+        // توابع کمکی
+        function generateId() {
+            return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // ذخیره در localStorage
+        function saveToLocalStorage() {
+            const data = {
+                teams: teams,
+                teamOrder: teamOrder
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // بارگذاری از localStorage
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    teams = data.teams || [];
+                    teamOrder = data.teamOrder || [];
+                } catch (e) {
+                    console.error('خطا در بارگذاری داده‌ها', e);
+                }
+            }
+        }
+
+        // ریست پیس و کوت تمام تیم‌ها (بدون تغییر wins)
+        function resetAllPisAndKots() {
+            teams.forEach(t => {
+                t.pis = 0;
+                t.singleKots = 0;
+            });
+        }
+
+        // بروزرسانی نمایش Count تیم‌ها و آمار کلی
+        function updateTeamsCount() {
+            teamsCountSpan.textContent = teams.length + ' تیم';
+        }
+
+        // عملیات باخت یک تیم (تیم بازنده مشخص می‌شود)
+        function handleLoss(loserId) {
+            // فقط در صورتی که حداقل دو تیم داریم و بازنده جزو دو تیم بالاست
+            if (teamOrder.length < 2) return;
+
+            const currentFirstId = teamOrder[0];
+            const currentSecondId = teamOrder[1];
+
+            if (loserId !== currentFirstId && loserId !== currentSecondId) return;
+
+            const winnerId = (loserId === currentFirstId) ? currentSecondId : currentFirstId;
+
+            const winnerTeam = teams.find(t => t.id === winnerId);
+            const loserTeam = teams.find(t => t.id === loserId);
+
+            if (!winnerTeam || !loserTeam) return;
+
+            // افزایش برد کلی برنده
+            winnerTeam.wins += 1;
+
+            // ریست پیس و کوت هر دو تیم
+            winnerTeam.pis = 0;
+            winnerTeam.singleKots = 0;
+            loserTeam.pis = 0;
+            loserTeam.singleKots = 0;
+
+            // جابجایی تیم بازنده به انتهای صف
+            const loserIndex = teamOrder.indexOf(loserId);
+            if (loserIndex !== -1) {
+                teamOrder.splice(loserIndex, 1);
+                teamOrder.push(loserId);
+            }
+
+            // ذخیره و رندر
+            saveToLocalStorage();
+            render();
+        }
+
+        // افزایش پیس با بررسی باخت
+        function handleIncrementPis(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+
+
+// فقط تیم‌های در حال بازی می‌توانند پیس بگیرند (اختیاری)
+            if (teamOrder.length < 2 || (teamId !== teamOrder[0] && teamId !== teamOrder[1])) {
+                alert('این تیم در حال حاضر بازی نمی‌کند.');
+                return;
+            }
+
+            team.pis = (team.pis || 0) + 1;
+            if (team.pis >= 4) {
+                handleLoss(teamId);
+            } else {
+                saveToLocalStorage();
+                render();
+            }
+        }
+
+        // کاهش پیس (دستی)
+        function handleDecrementPis(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+            if (team.pis > 0) {
+                team.pis -= 1;
+                saveToLocalStorage();
+                render();
+            }
+        }
+
+        // افزایش کوت تکی
+        function handleIncrementSingleKot(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+
+            if (teamOrder.length < 2 || (teamId !== teamOrder[0] && teamId !== teamOrder[1])) {
+                alert('این تیم در حال حاضر بازی نمی‌کند.');
+                return;
+            }
+
+            team.singleKots = (team.singleKots || 0) + 1;
+            if (team.singleKots >= 2) {
+                handleLoss(teamId);
+            } else {
+                saveToLocalStorage();
+                render();
+            }
+        }
+
+        // کاهش کوت تکی (دستی)
+        function handleDecrementSingleKot(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+            if (team.singleKots > 0) {
+                team.singleKots -= 1;
+                saveToLocalStorage();
+                render();
+            }
+        }
+
+        // کوت حاکمی (باخت مستقیم)
+        function handleHakemiKot(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+
+            if (teamOrder.length < 2 || (teamId !== teamOrder[0] && teamId !== teamOrder[1])) {
+                alert('این تیم در حال حاضر بازی نمی‌کند.');
+                return;
+            }
+
+            handleLoss(teamId);
+        }
+
+        // باخت دستی (برای مواقع ضروری)
+        function handleManualLoss(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+
+            if (teamOrder.length < 2 || (teamId !== teamOrder[0] && teamId !== teamOrder[1])) {
+                alert('این تیم در حال حاضر بازی نمی‌کند.');
+                return;
+            }
+
+            handleLoss(teamId);
+        }
+
+        // افزایش برد کلی (دستی)
+        function handleIncrementWin(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+            team.wins += 1;
+            saveToLocalStorage();
+            render();
+        }
+
+        // کاهش برد کلی (دستی)
+        function handleDecrementWin(teamId) {
+            const team = teams.find(t => t.id === teamId);
+            if (!team) return;
+            if (team.wins > 0) {
+                team.wins -= 1;
+                saveToLocalStorage();
+                render();
+            }
+        }
+
+        // افزودن تیم جدید
+        function addTeam(name) {
+            if (!name.trim()) {
+                alert('لطفاً نام تیم را وارد کنید.');
+                return;
+            }
+            if (teams.some(t => t.name === name.trim())) {
+                alert('تیمی با این نام وجود دارد.');
+                return;
+            }
+
+            const newTeam = {
+                id: generateId(),
+                name: name.trim(),
+                wins: 0,
+                pis: 0,
+                singleKots: 0
+            };
+            teams.push(newTeam);
+            teamOrder.push(newTeam.id);  // به انتهای صف اضافه می‌شود
+            teamNameInput.value = '';
+            saveToLocalStorage();
+            render();
+        }
+
+        // حذف تیم
+        function removeTeam(teamId) {
+            // اگر تیم جزو دو تیم در حال بازی است، اجازه حذف نده
+            if (teamOrder.
+
+
+length >= 2 && (teamId === teamOrder[0] || teamId === teamOrder[1])) {
+                alert('امکان حذف تیم در حال بازی وجود ندارد. ابتدا صبر کنید تا بازی تمام شود.');
+                return;
+            }
+
+            // حذف از teams
+            teams = teams.filter(t => t.id !== teamId);
+            // حذف از teamOrder
+            teamOrder = teamOrder.filter(id => id !== teamId);
+
+            saveToLocalStorage();
+            render();
+        }
+
+        // قرعه‌کشی و تنظیم ترتیب تصادفی
+        function shuffleAndStart() {
+            if (teams.length < 2) {
+                alert('حداقل به دو تیم نیاز دارید.');
+                return;
+            }
+
+            // شافل کردن آرایه teamOrder
+            for (let i = teamOrder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [teamOrder[i], teamOrder[j]] = [teamOrder[j], teamOrder[i]];
+            }
+
+            // ریست پیس و کوت همه تیم‌ها برای شروع جدید
+            resetAllPisAndKots();
+
+            saveToLocalStorage();
+            render();
+        }
+
+        // ریست کامل آمار (بدون تغییر wins کلی) - فقط پیس و کوت صفر می‌شوند
+        function resetStats() {
+            resetAllPisAndKots();
+            saveToLocalStorage();
+            render();
+        }
+
+        // پایان مسابقه: به تیم اول یک برد اضافه کن و همه پیس‌ها و کوت‌ها را ریست کن
+        function endMatch() {
+            if (teamOrder.length === 0) {
+                alert('تیمی وجود ندارد.');
+                return;
+            }
+            const firstTeamId = teamOrder[0];
+            const firstTeam = teams.find(t => t.id === firstTeamId);
+            if (firstTeam) {
+                firstTeam.wins += 1;
+            }
+            resetAllPisAndKots();
+            saveToLocalStorage();
+            render();
+        }
+
+        // تابع رندر اصلی
+        function render() {
+            updateTeamsCount();
+
+            // رندر بخش بازی فعلی
+            if (teamOrder.length >= 2) {
+                const team1Id = teamOrder[0];
+                const team2Id = teamOrder[1];
+                const team1 = teams.find(t => t.id === team1Id);
+                const team2 = teams.find(t => t.id === team2Id);
+
+                if (team1 && team2) {
+                    matchupContainer.innerHTML = `
+                        <div class="team-card">
+                            <h3>${team1.name}</h3>
+                            <div class="stats">
+                                <span>🏆 برد ${team1.wins}</span>
+                                <span>🎴 پیس ${team1.pis}</span>
+                                <span>⚡ کوت ${team1.singleKots}</span>
+                            </div>
+                            <div class="actions">
+                                <button class="pis-btn" data-team-id="${team1.id}">🎴 +پیس</button>
+                                <button class="kot-taki-btn" data-team-id="${team1.id}">⚡ +کوت تکی</button>
+                                <button class="kot-hakemi-btn" data-team-id="${team1.id}">🔥 کوت حاکمی</button>
+                                <button class="manual-loss-btn" data-team-id="${team1.id}">❌ باخت مستقیم</button>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <h3>${team2.name}</h3>
+                            <div class="stats">
+                                <span>🏆 برد ${team2.wins}</span>
+                                <span>🎴 پیس ${team2.pis}</span>
+                                <span>⚡ کوت ${team2.singleKots}</span>
+                            </div>
+                            <div class="actions">
+                                <button class="pis-btn" data-team-id="${team2.id}">🎴 +پیس</button>
+                                <button class="kot-taki-btn" data-team-id="${team2.id}">⚡ +کوت تکی</button>
+                                <button class="kot-hakemi-btn" data-team-id="${team2.id}">🔥 کوت حاکمی</button>
+                                <button class="manual-loss-btn" data-team-id="${team2.id}">❌ باخت مستقیم</button>
+
+
+</div>
+                        </div>
+                    `;
+                } else {
+                    matchupContainer.innerHTML = '<div class="empty-state">خطا در بارگذاری تیم‌ها</div>';
+                }
+            } else {
+                matchupContainer.innerHTML = '<div class="empty-state">برای شروع بازی حداقل دو تیم لازم است.</div>';
+            }
+
+            // رندر لیست تمام تیم‌ها با کنترل‌های دستی
+            if (teams.length === 0) {
+                teamsListContainer.innerHTML = '<div class="empty-state">هیچ تیمی ثبت نشده است. تیم جدید اضافه کنید.</div>';
+            } else {
+                let teamsHtml = '';
+                teams.forEach(team => {
+                    const isPlaying = teamOrder.length >= 2 && (team.id === teamOrder[0] || team.id === teamOrder[1]);
+                    teamsHtml += `
+                        <div class="team-row">
+                            <div class="team-info">
+                                <span class="team-name">${team.name}</span>
+                                <div class="stat-control">
+                                    <button class="small inc-win" data-team-id="${team.id}">+</button>
+                                    <span>🏆 ${team.wins}</span>
+                                    <button class="small dec-win" data-team-id="${team.id}" ${team.wins === 0 ? 'disabled' : ''}>-</button>
+                                </div>
+                                <div class="stat-control">
+                                    <button class="small inc-pis" data-team-id="${team.id}">+</button>
+                                    <span>🎴 ${team.pis}</span>
+                                    <button class="small dec-pis" data-team-id="${team.id}" ${team.pis === 0 ? 'disabled' : ''}>-</button>
+                                </div>
+                                <div class="stat-control">
+                                    <button class="small inc-kot" data-team-id="${team.id}">+</button>
+                                    <span>⚡ ${team.singleKots}</span>
+                                    <button class="small dec-kot" data-team-id="${team.id}" ${team.singleKots === 0 ? 'disabled' : ''}>-</button>
+                                </div>
+                            </div>
+                            <button class="remove-btn" data-team-id="${team.id}" ${isPlaying ? 'disabled' : ''}>🗑 حذف</button>
+                        </div>
+                    `;
+                });
+                teamsListContainer.innerHTML = teamsHtml;
+            }
+
+            // رندر آمار کلی (فقط مجموع بردها)
+            if (teams.length > 0) {
+                let overallHtml = '';
+                teams.forEach(team => {
+                    overallHtml += `<span><strong>${team.name}:</strong> ${team.wins}</span>`;
+                });
+                overallStatsContainer.innerHTML = overallHtml;
+            } else {
+                overallStatsContainer.innerHTML = '<span>آماری وجود ندارد</span>';
+            }
+
+            // اضافه کردن event listeners به دکمه‌های پویا (بازی فعلی)
+            document.querySelectorAll('.pis-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    handleIncrementPis(teamId);
+                });
+            });
+
+            document.querySelectorAll('.kot-taki-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    handleIncrementSingleKot(teamId);
+                });
+            });
+
+            document.querySelectorAll('.kot-hakemi-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    handleHakemiKot(teamId);
+                });
+            });
+
+            document.querySelectorAll('.manual-loss-btn').
+
+
+forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    handleManualLoss(teamId);
+                });
+            });
+
+            // event listeners برای کنترل‌های دستی در لیست
+            document.querySelectorAll('.inc-win').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    handleIncrementWin(teamId);
+                });
+            });
+            document.querySelectorAll('.dec-win').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    handleDecrementWin(teamId);
+                });
+            });
+            document.querySelectorAll('.inc-pis').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    // افزایش پیس دستی: مشابه رویداد بازی اما بدون محدودیت بازی؟ اما اگر تیم در حال بازی نباشد، اجازه بدهیم؟ احتمالاً بله، برای ویرایش دستی هر زمان مجاز است.
+                    const team = teams.find(t => t.id === teamId);
+                    if (team) {
+                        team.pis += 1;
+                        // بررسی باخت
+                        if (team.pis >= 4) {
+                            // اگر در حال بازی باشد، باخت رخ دهد؟ در ویرایش دستی، اگر تیم در حال بازی نباشد، نباید باخت اتفاق بیفتد؟ اما منطقاً اگر تیمی پیسش به ۴ برسد باید بازنده شود. بهتر است همان handleLoss را صدا بزنیم اما فقط اگر در حال بازی باشد.
+                            if (teamOrder.length >= 2 && (team.id === teamOrder[0] || team.id === teamOrder[1])) {
+                                handleLoss(team.id);
+                            } else {
+                                // اگر در حال بازی نیست، فقط پیس را ثبت می‌کنیم و باختی رخ نمی‌دهد (چون بازی نمی‌کند). اما شاید بهتر است اجازه دهیم هر مقداری باشد.
+                                saveToLocalStorage();
+                                render();
+                            }
+                        } else {
+                            saveToLocalStorage();
+                            render();
+                        }
+                    }
+                });
+            });
+            document.querySelectorAll('.dec-pis').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    const team = teams.find(t => t.id === teamId);
+                    if (team && team.pis > 0) {
+                        team.pis -= 1;
+                        saveToLocalStorage();
+                        render();
+                    }
+                });
+            });
+            document.querySelectorAll('.inc-kot').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    const team = teams.find(t => t.id === teamId);
+                    if (team) {
+                        team.singleKots += 1;
+                        if (team.singleKots >= 2) {
+                            if (teamOrder.length >= 2 && (team.id === teamOrder[0] || team.id === teamOrder[1])) {
+                                handleLoss(team.id);
+                            } else {
+                                saveToLocalStorage();
+                                render();
+                            }
+                        } else {
+                            saveToLocalStorage();
+                            render();
+                        }
+                    }
+                });
+            });
+            document.querySelectorAll('.dec-kot').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.
+
+
+stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    const team = teams.find(t => t.id === teamId);
+                    if (team && team.singleKots > 0) {
+                        team.singleKots -= 1;
+                        saveToLocalStorage();
+                        render();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const teamId = btn.dataset.teamId;
+                    removeTeam(teamId);
+                });
+            });
+        }
+
+        // Event listeners برای دکمه‌های ثابت
+        addTeamBtn.addEventListener('click', () => {
+            addTeam(teamNameInput.value);
+        });
+
+        teamNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTeam(teamNameInput.value);
+            }
+        });
+
+        drawBtn.addEventListener('click', shuffleAndStart);
+
+        endMatchBtn.addEventListener('click', endMatch);
+
+        resetStatsBtn.addEventListener('click', resetStats);
+
+        // مقداردهی اولیه: بارگذاری از localStorage یا ایجاد نمونه پیش‌فرض
+        loadFromLocalStorage();
+        if (teams.length === 0) {
+            // ایجاد تیم‌های پیش‌فرض
+            const defaultNames = ['میلاد','جولیا'];
+            defaultNames.forEach(name => {
+                const newTeam = {
+                    id: generateId(),
+                    name: name,
+                    wins: 0,
+                    pis: 0,
+                    singleKots: 0
+                };
+                teams.push(newTeam);
+                teamOrder.push(newTeam.id);
+            });
+            // قرعه‌کشی اولیه
+            shuffleAndStart();
+        }
+        render();
+    })();
+</script>
+</body>
+</html>
