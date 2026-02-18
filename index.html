@@ -450,15 +450,7 @@ transition: 0.2s;
         </div>
     </div>
 
-    <!-- بخش آمار کلی -->
-    <div class="overall-stats" id="overallStats">
-        <h3><i class="fas fa-trophy"></i> آمار کلی بردها</h3>
 
-
-<div id="overallStatsContainer" class="stats-summary">
-            <!-- به صورت داینامیک پر می‌شود -->
-        </div>
-    </div>
 
     <footer>برای ویرایش دستی از دکمه‌های + و - استفاده کنید</footer>
 </div>
@@ -509,6 +501,7 @@ transition: 0.2s;
             teams.forEach(t => {
                 t.pis = 0;
                 t.singleKots = 0;
+                t.wins = 0;
             });
         }
 
@@ -824,16 +817,7 @@ floor(Math.random() * (i + 1));
                 teamsListContainer.innerHTML = teamsHtml;
             }
 
-            // رندر آمار کلی
-            if (teams.length > 0) {
-                let overallHtml = '';
-                teams.forEach(team => {
-                    overallHtml += `<span><strong>${team.name}:</strong> ${team.wins}</span>`;
-                });
-                overallStatsContainer.innerHTML = overallHtml;
-            } else {
-                overallStatsContainer.innerHTML = '<span>آماری وجود ندارد</span>';
-            }
+       
 
             // اتصال event listeners
             document.querySelectorAll('.pis-btn').forEach(btn => {
